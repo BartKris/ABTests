@@ -15,20 +15,38 @@ class MyGame extends Phaser.Scene {
         this.input.keyboard.on('keyup-X', () => {
             this.clearTimer();
         });
+        this.objectPool = [];
+        for(let i = 0; i < 140; i++){
+            for(let j = 0; j < i; j++){
+                this.objectPool.push(this.physics.add.image(Math.random() * 760 + 20, Math.random() * 560 + 20, 'logo'));
+            }
+        }
+        console.log(this.objectPool.length);
+        this.objectPool.forEach(element => {
+            element.setVisible(false);
+        });
         this.data = [];
         this.i = 0;
+        this.index = 0;
         this.fpsCounter = new FPSCounter(this);
         this.text = this.add.text(30, 70, "i: ", { color: '#fff000', fontSize: 40})
         .setDepth(99);
         this.sprite = this.physics.add.image(400, 300, 'logo');
         this.timerInterval = setInterval(() => {
+            this.index=0;
             for(let i = 0; i < this.i; i += 1) {
-                this.physics.add.image(Math.random() * 760 + 20, Math.random() * 560 + 20, 'logo');
+                for(let j = 0; j < i; j++){
+                    this.objectPool[this.index].setVisible(true);
+                    this.index+=1;
+                }
             }
             this.text.setText(`i: ${this.i}`);
             this.data.push(`${this.fpsCounter.getFPS()} ${this.text.text}`);
             this.i += 1;
-        }, 1000);
+            if(this.i >= 140){
+                this.clearTimer();
+            }
+        }, 500);
     }
 
     clearTimer() {
@@ -42,13 +60,13 @@ class MyGame extends Phaser.Scene {
           }
           this.rect = this.add.rectangle(0, 0, 800, 600, '0x000000').setDepth(50).setOrigin(0);
         }
+        this.add.text(0, 600 - 120, "120", { color: '#00ffff', fontSize: 10}).setOrigin(0).setDepth(99);;
+        this.add.text(0, 600 - 60, "60", { color: '#00ffff', fontSize: 10}).setOrigin(0).setDepth(99);;
+        this.add.text(0, 600, "0", { color: '#00ffff', fontSize: 10}).setOrigin(0).setDepth(99);;
       }
 
 
     update() {
-        if(this.i >= 140){
-            this.clearTimer();
-        }
     }
 }
 
