@@ -23,7 +23,7 @@ class MyGame extends Phaser.Scene {
         this.sprite = this.physics.add.image(400, 300, 'logo');
         this.timerInterval = setInterval(() => {
             for(let i = 0; i < this.i; i += 1) {
-                this.physics.add.image(Math.random() * 760 + 20, Math.random() * 560 + 20, 'logo');
+                const mario = new Mario(this, Math.random() * 760 + 20, Math.random() * 560 + 20,);
             }
             this.text.setText(`i: ${this.i}`);
             this.data.push(`${this.fpsCounter.getFPS()} ${this.text.text}`);
@@ -51,9 +51,7 @@ class MyGame extends Phaser.Scene {
     }
 
     update() {
-        if(this.i >= 140){
-            this.clearTimer();
-        }
+        this.events.emit('update');
     }
 }
 
@@ -73,3 +71,16 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+class Mario{
+    constructor(scene, x, y) {
+      scene.events.on('update', this.move, this);
+      this.sprite = scene.physics.add.image(x, y, 'logo');
+    }
+  
+    move(){
+      this.sprite.x += 1;
+      if(this.sprite.x > 800)
+      this.sprite.x = 0;
+    }
+}
