@@ -28,7 +28,10 @@ class MyGame extends Phaser.Scene {
             this.text.setText(`i: ${this.i}`);
             this.data.push(`${this.fpsCounter.getFPS()} ${this.text.text}`);
             this.i += 1;
-        }, 1000);
+            if(this.i >= 140){
+                this.clearTimer();
+            }
+        }, 500);
     }
 
     clearTimer() {
@@ -42,8 +45,10 @@ class MyGame extends Phaser.Scene {
           }
           this.rect = this.add.rectangle(0, 0, 800, 600, '0x000000').setDepth(50).setOrigin(0);
         }
-      }
-
+      this.add.text(0, 600 - 120, "120", { color: '#00ffff', fontSize: 10}).setOrigin(0).setDepth(99);
+      this.add.text(0, 600 - 60, "60", { color: '#00ffff', fontSize: 10}).setOrigin(0).setDepth(99);
+      this.add.text(0, 600, "0", { color: '#00ffff', fontSize: 10}).setOrigin(0).setDepth(99);
+    }
 
     update() {
         if(this.i >= 140){
