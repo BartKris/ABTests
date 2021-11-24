@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import logoImg from './assets/character.png';
 import FPSCounter from './FPSCounter';
+import Singleton from './Singleton';
 
 class MyGame extends Phaser.Scene {
     constructor() {
@@ -23,7 +24,7 @@ class MyGame extends Phaser.Scene {
         this.sprite = this.physics.add.image(400, 300, 'logo');
         this.timerInterval = setInterval(() => {
             for(let i = 0; i < this.i; i += 1) {
-                this.physics.add.image(Math.random() * 760 + 20, Math.random() * 560 + 20, 'logo');
+                MarioManager.instance.createMario();
             }
             this.text.setText(`i: ${this.i}`);
             this.data.push(`${this.fpsCounter.getFPS()} ${this.text.text}`);
@@ -32,6 +33,7 @@ class MyGame extends Phaser.Scene {
                 this.clearTimer();
             }
         }, 500);
+        this.marioManager = new MarioManager(this);
     }
 
     clearTimer() {
@@ -51,9 +53,7 @@ class MyGame extends Phaser.Scene {
     }
 
     update() {
-        if(this.i >= 140){
-            this.clearTimer();
-        }
+        this.events.emit('update');
     }
 }
 
@@ -73,3 +73,28 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+class MarioManager extends Singleton{
+    constructor(scene){
+        super();
+        this.scene = scene;
+        this.marios = [];
+        this.scene.events.on('update', this.update, this);
+    }
+
+    createMario(){
+        this.marios.push(
+            this.scene.physics.add.image(
+                Math.random() * 760 + 20, Math.random() * 560 + 20, 'logo',
+            )
+        );
+    }
+
+    update(){
+        this.marios.forEach(element => {
+            element.x += 1;
+            if(element.x > 800)
+            element.x = 0;
+        });
+    }
+}
